@@ -1,6 +1,4 @@
 import React from "react";
-import { cx } from "@emotion/css";
-import { useStyles } from "../../hooks";
 
 /**
  * Imports other types, components and hooks.
@@ -23,14 +21,6 @@ export type TMenu = {} & typeof MenuDefaultProps;
 const MenuDefaultProps = {};
 
 /**
- * Defines the styles.
- * @ignore
- */
-const container = {
-  label: "Container",
-};
-
-/**
  * Displays the Menu.
  * @category Components
  * @component
@@ -38,9 +28,7 @@ const container = {
  * return <Menu />
  */
 const Menu = (props: TMenu) => {
-  const { containerKlass } = useStyles(container, props);
-
-  return <div className={cx("Menu", containerKlass)}>Menu</div>;
+  return <div>Menu</div>;
 };
 
 Menu.defaultProps = MenuDefaultProps;

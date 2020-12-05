@@ -1,10 +1,12 @@
-import React from "react";
-import { cx } from "@emotion/css";
-import { useStyles } from "../../hooks";
+import React, { ReactNode } from "react";
+import { useRouter } from "next/router";
+import { useMediaQuery } from "react-responsive";
 
 /**
  * Imports other types, components and hooks.
  */
+import { Menu } from "../Menu";
+import { Content } from "../Content";
 
 /**
  * Defines the Template type.
@@ -12,7 +14,9 @@ import { useStyles } from "../../hooks";
  * @example
  * Example here...
  */
-export type TTemplate = {} & typeof TemplateDefaultProps;
+export type TTemplate = {
+  children: ReactNode;
+} & typeof TemplateDefaultProps;
 
 /**
  * Defines the Template default props.
@@ -23,14 +27,6 @@ export type TTemplate = {} & typeof TemplateDefaultProps;
 const TemplateDefaultProps = {};
 
 /**
- * Defines the styles.
- * @ignore
- */
-const container = {
-  label: "Container",
-};
-
-/**
  * Displays the Template.
  * @category Components
  * @component
@@ -38,9 +34,30 @@ const container = {
  * return <Template />
  */
 const Template = (props: TTemplate) => {
-  const { containerKlass } = useStyles(container, props);
+  const { children } = props;
+  /**
+   * Checks if homepage is the current route.
+   */
+  const router = useRouter();
+  const route = router?.route;
+  const isHomePage = route === "/";
 
-  return <div className={cx("Template", containerKlass)}>Template</div>;
+  const handleMediaQueryChange = (matches) => {
+    console.log("handleMediaQueryChange:", matches);
+  };
+
+  const isPortrait = useMediaQuery(
+    { query: "(orientation: portrait)" },
+    undefined,
+    handleMediaQueryChange
+  );
+
+  return (
+    <>
+      <Menu />
+      <Content>{children}</Content>
+    </>
+  );
 };
 
 Template.defaultProps = TemplateDefaultProps;

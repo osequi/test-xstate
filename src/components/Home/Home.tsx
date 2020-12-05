@@ -1,5 +1,5 @@
 import React from "react";
-import { useMediaQuery } from "react-responsive";
+import Link from "next/link";
 
 /**
  * Imports other types, components and hooks.
@@ -29,19 +29,12 @@ const HomeDefaultProps = {};
  * return <Home />
  */
 const Home = (props: THome) => {
-  const handleMediaQueryChange = (matches) => {
-    console.log("handleMediaQueryChange:", matches);
-  };
-
-  const isPortrait = useMediaQuery(
-    { query: "(orientation: portrait)" },
-    undefined,
-    handleMediaQueryChange
+  return (
+    <div>
+      <h3>Home</h3>
+      <Link href="/features">Features</Link>
+    </div>
   );
-
-  const text = isPortrait ? "portrait" : "landscape";
-
-  return <>{text}</>;
 };
 
 Home.defaultProps = HomeDefaultProps;

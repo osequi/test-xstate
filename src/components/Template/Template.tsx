@@ -1,6 +1,8 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useMediaQuery } from "react-responsive";
+import { useMachine } from "@xstate/react";
+import { Machine } from "xstate";
 
 /**
  * Imports other types, components and hooks.
@@ -26,6 +28,22 @@ export type TTemplate = {
  */
 const TemplateDefaultProps = {};
 
+const menuMachine = Machine({
+  id: "menu",
+  initial: "default",
+  states: {
+    default: {
+      on: { PORTRAIT: "titleWithIcon", HOMEPAGE: "hidden" },
+    },
+    titleWithIcon: {
+      on: { LANDSCAPE: "default" },
+    },
+    hidden: {
+      on: { NONHOMEPAGE: "default" },
+    },
+  },
+});
+
 /**
  * Displays the Template.
  * @category Components
@@ -35,6 +53,8 @@ const TemplateDefaultProps = {};
  */
 const Template = (props: TTemplate) => {
   const { children } = props;
+  const [state, send] = useMachine(menuMachine);
+
   /**
    * Checks if homepage is the current route.
    */
@@ -42,8 +62,13 @@ const Template = (props: TTemplate) => {
   const route = router?.route;
   const isHomePage = route === "/";
 
+  useEffect(() => {
+    isHomePage ? send("HOMEPAGE") : send("NONHOMEPAGE");
+  }, [isHomePage]);
+
   const handleMediaQueryChange = (matches) => {
     console.log("handleMediaQueryChange:", matches);
+    matches ? send("PORTRAIT") : send("LANDSCAPE");
   };
 
   const isPortrait = useMediaQuery(
@@ -54,7 +79,11 @@ const Template = (props: TTemplate) => {
 
   return (
     <>
-      <Menu />
+      <ul>
+        <li>{`isHomePage: ${isHomePage}`}</li>
+        <li>{`isPortrait: ${isPortrait}`}</li>
+      </ul>
+      <Menu state={state} />
       <Content>{children}</Content>
     </>
   );

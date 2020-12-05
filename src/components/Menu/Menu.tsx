@@ -10,7 +10,9 @@ import React from "react";
  * @example
  * Example here...
  */
-export type TMenu = {} & typeof MenuDefaultProps;
+export type TMenu = {
+  state: any;
+} & typeof MenuDefaultProps;
 
 /**
  * Defines the Menu default props.
@@ -18,7 +20,9 @@ export type TMenu = {} & typeof MenuDefaultProps;
  * @example
  * Example here...
  */
-const MenuDefaultProps = {};
+const MenuDefaultProps = {
+  state: "initial",
+};
 
 /**
  * Displays the Menu.
@@ -28,7 +32,8 @@ const MenuDefaultProps = {};
  * return <Menu />
  */
 const Menu = (props: TMenu) => {
-  return <div>Menu</div>;
+  const { state } = props;
+  return <div>Menu: {JSON.stringify(state?.value)}</div>;
 };
 
 Menu.defaultProps = MenuDefaultProps;

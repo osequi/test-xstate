@@ -28,18 +28,54 @@ export type TTemplate = {
  */
 const TemplateDefaultProps = {};
 
-const menuMachine = Machine({
-  id: "menu",
-  initial: "default",
+interface MenuStateSchema {
   states: {
-    default: {
-      on: { PORTRAIT: "titleWithIcon", HOMEPAGE: "hidden" },
-    },
-    titleWithIcon: {
-      on: { LANDSCAPE: "default" },
+    unknown: {};
+    hidden: {};
+    displayed: {
+      states: {
+        default: {};
+        titleWithIcon: {};
+      };
+    };
+  };
+}
+
+type MenuStateChangingEvents =
+  | { type: "HOMEPAGE" }
+  | { type: "NONHOMEPAGE" }
+  | { type: "PORTRAIT" }
+  | { type: "LANDSCAPE" };
+
+interface MenuContext {}
+
+const menuMachine = Machine<
+  MenuContext,
+  MenuStateSchema,
+  MenuStateChangingEvents
+>({
+  key: "menu",
+  initial: "unknown",
+  states: {
+    unknown: {
+      on: { HOMEPAGE: "hidden", NONHOMEPAGE: "displayed" },
     },
     hidden: {
-      on: { NONHOMEPAGE: "default" },
+      on: { NONHOMEPAGE: "displayed" },
+    },
+    displayed: {
+      on: {
+        HOMEPAGE: "hidden",
+      },
+      initial: "default",
+      states: {
+        default: {
+          on: { PORTRAIT: "titleWithIcon" },
+        },
+        titleWithIcon: {
+          on: { LANDSCAPE: "default" },
+        },
+      },
     },
   },
 });
@@ -63,19 +99,16 @@ const Template = (props: TTemplate) => {
   const isHomePage = route === "/";
 
   useEffect(() => {
+    console.log("Route changed:", route);
     isHomePage ? send("HOMEPAGE") : send("NONHOMEPAGE");
   }, [isHomePage]);
 
-  const handleMediaQueryChange = (matches) => {
-    console.log("handleMediaQueryChange:", matches);
-    matches ? send("PORTRAIT") : send("LANDSCAPE");
-  };
+  const isPortrait = useMediaQuery({ query: "(orientation: portrait)" });
 
-  const isPortrait = useMediaQuery(
-    { query: "(orientation: portrait)" },
-    undefined,
-    handleMediaQueryChange
-  );
+  useEffect(() => {
+    console.log("Device changed:", isPortrait);
+    isPortrait ? send("PORTRAIT") : send("LANDSCAPE");
+  }, [isPortrait]);
 
   return (
     <>

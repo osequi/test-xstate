@@ -1,4 +1,5 @@
 import React from "react";
+import { useMediaQuery } from "react-responsive";
 
 /**
  * Imports other types, components and hooks.
@@ -21,14 +22,6 @@ export type THome = {} & typeof HomeDefaultProps;
 const HomeDefaultProps = {};
 
 /**
- * Defines the styles.
- * @ignore
- */
-const container = {
-  label: "Container",
-};
-
-/**
  * Displays the Home.
  * @category Components
  * @component
@@ -36,7 +29,19 @@ const container = {
  * return <Home />
  */
 const Home = (props: THome) => {
-  return "Home";
+  const handleMediaQueryChange = (matches) => {
+    console.log("handleMediaQueryChange:", matches);
+  };
+
+  const isPortrait = useMediaQuery(
+    { query: "(orientation: portrait)" },
+    undefined,
+    handleMediaQueryChange
+  );
+
+  const text = isPortrait ? "portrait" : "landscape";
+
+  return <>{text}</>;
 };
 
 Home.defaultProps = HomeDefaultProps;

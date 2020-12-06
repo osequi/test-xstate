@@ -12,7 +12,6 @@ import { Machine } from "xstate";
  * Example here...
  */
 export type TMenu = {
-  items: string[];
   state: any;
 } & typeof MenuDefaultProps;
 
@@ -23,7 +22,6 @@ export type TMenu = {
  * Example here...
  */
 const MenuDefaultProps = {
-  items: null,
   state: null,
 };
 

@@ -30,22 +30,25 @@ const MenuDefaultProps = {
 /**
  * Defines the context for the menu state.
  * Not really used here. It was borrowed from Typestates, the future syntax of XState.
+ * However it makes to better understand what's about this state.
  * @see https://xstate.js.org/docs/guides/typescript.html#using-typescript
  */
 interface MenuStateContext {
   /**
    * On homepage the menu is not displayed.
+   * Everywhere else the menu is displayed.
    */
   page?: "Home" | "NonHome";
   /**
-   * On landscape the full menu is displayed. On portrait only the active menu title with a hamburger icon.
-   * @type {String}
+   * On portrait the active menu title is displayed together with a hamburger icon.
+   * On landscape the full menu is displayed.
    */
   deviceOrientation: "Portrait" | "Landscape";
 }
 
 /**
  * Defines the menu state schema.
+ * The menu can be in one of these states.
  */
 interface MenuStateSchema {
   states: {
@@ -62,6 +65,7 @@ interface MenuStateSchema {
 
 /**
  * Defines the events changing the menu state.
+ * In fact, the menu state is changing when the context is changed.
  */
 type MenuStateChangingEvents =
   | { type: "HOMEPAGE" }
@@ -71,6 +75,7 @@ type MenuStateChangingEvents =
 
 /**
  * Defines the menu state machine.
+ * This should work, first of all, in the visualizer.
  * @see https://xstate.js.org/viz/?gist=48b26a64f6ce9677bec1037cfec4b487
  */
 const menuMachine = Machine<

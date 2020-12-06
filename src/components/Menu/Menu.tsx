@@ -72,15 +72,9 @@ type MenuStateChangingEvents =
   | { type: "LANDSCAPE" };
 
 /**
- * Defines the menu state machine.
- * This should work, first of all, in the visualizer.
- * @see https://xstate.js.org/viz/?gist=48b26a64f6ce9677bec1037cfec4b487
+ * Defines how the menu states transition from a state to another.
  */
-const menuMachine = Machine<
-  MenuStateContext,
-  MenuStateSchema,
-  MenuStateChangingEvents
->({
+const menuStateTransitions = {
   key: "menu",
   initial: "unknown",
   states: {
@@ -105,7 +99,14 @@ const menuMachine = Machine<
       },
     },
   },
-});
+};
+
+/**
+ * Defines the menu state machine.
+ * This should work, first of all, in the visualizer.
+ * @see https://xstate.js.org/viz/?gist=48b26a64f6ce9677bec1037cfec4b487
+ */
+const menuMachine = Machine(menuStateTransitions);
 
 /**
  * Displays the Menu.
@@ -122,4 +123,4 @@ const Menu = (props: TMenu) => {
 Menu.defaultProps = MenuDefaultProps;
 
 export default Menu;
-export { MenuDefaultProps, menuMachine };
+export { MenuDefaultProps, menuMachine, menuStateTransitions };

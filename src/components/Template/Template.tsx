@@ -28,58 +28,6 @@ export type TTemplate = {
  */
 const TemplateDefaultProps = {};
 
-interface MenuStateSchema {
-  states: {
-    unknown: {};
-    hidden: {};
-    displayed: {
-      states: {
-        default: {};
-        titleWithIcon: {};
-      };
-    };
-  };
-}
-
-type MenuStateChangingEvents =
-  | { type: "HOMEPAGE" }
-  | { type: "NONHOMEPAGE" }
-  | { type: "PORTRAIT" }
-  | { type: "LANDSCAPE" };
-
-interface MenuContext {}
-
-const menuMachine2 = Machine<
-  MenuContext,
-  MenuStateSchema,
-  MenuStateChangingEvents
->({
-  key: "menu",
-  initial: "unknown",
-  states: {
-    unknown: {
-      on: { HOMEPAGE: "hidden", NONHOMEPAGE: "displayed" },
-    },
-    hidden: {
-      on: { NONHOMEPAGE: "displayed" },
-    },
-    displayed: {
-      on: {
-        HOMEPAGE: "hidden",
-      },
-      initial: "default",
-      states: {
-        default: {
-          on: { PORTRAIT: "titleWithIcon" },
-        },
-        titleWithIcon: {
-          on: { LANDSCAPE: "default" },
-        },
-      },
-    },
-  },
-});
-
 /**
  * Displays the Template.
  * @category Components
@@ -98,15 +46,22 @@ const Template = (props: TTemplate) => {
   const route = router?.route;
   const isHomePage = route === "/";
 
+  /**
+   * Checks if the device is in portrait mode.
+   */
+  const isPortrait = useMediaQuery({ query: "(orientation: portrait)" });
+
+  /**
+   * Updates the `page` typestate on route change.
+   */
   useEffect(() => {
-    console.log("Route changed:", route);
     isHomePage ? send("HOMEPAGE") : send("NONHOMEPAGE");
   }, [isHomePage]);
 
-  const isPortrait = useMediaQuery({ query: "(orientation: portrait)" });
-
+  /**
+   * Updates the `deviceOrientation` typestate on device rotation.
+   */
   useEffect(() => {
-    console.log("Device changed:", isPortrait);
     isPortrait ? send("PORTRAIT") : send("LANDSCAPE");
   }, [isPortrait]);
 

@@ -24,68 +24,70 @@ export type TMenu = {
  */
 const MenuDefaultProps = {
   items: null,
-  state: "initial",
+  state: null,
 };
 
 /**
- * Defines the menu typestate
- * @see https://xstate.js.org/docs/guides/typescript.html#typestates
+ * Defines the context for the menu state.
+ * Not really used here. It was borrowed from Typestates, the future syntax of XState.
+ * @see https://xstate.js.org/docs/guides/typescript.html#using-typescript
  */
 interface MenuStateContext {
-  page?: "Home" | "NotHome";
-  deviceOrientation?: "Portrait" | "Landscape";
+  /**
+   * On homepage the menu is not displayed.
+   */
+  page?: "Home" | "NonHome";
+  /**
+   * On landscape the full menu is displayed. On portrait only the active menu title with a hamburger icon.
+   * @type {String}
+   */
+  deviceOrientation: "Portrait" | "Landscape";
 }
 
-type MenuState =
-  | {
-      value: "idle";
-      context: MenuStateContext & {
-        page: undefined;
-        deviceOrientation: undefined;
-      };
-    }
-  | {
-      value: "hidden";
-      context: MenuStateContext & {
-        page: "Home";
-        deviceOrientation: undefined;
-      };
-    }
-  | {
-      value: "visible";
-      context: MenuStateContext & {
-        page: "NotHome";
-        deviceOrientation: "Landscape";
-      };
-    }
-  | {
-      value: "titleWithIcon";
-      context: MenuStateContext & {
-        page: "NotHome";
-        deviceOrientation: "Portrait";
+/**
+ * Defines the menu state schema.
+ */
+interface MenuStateSchema {
+  states: {
+    unknown: {};
+    hidden: {};
+    displayed: {
+      states: {
+        default: {};
+        titleWithIcon: {};
       };
     };
+  };
+}
 
+/**
+ * Defines the events changing the menu state.
+ */
 type MenuStateChangingEvents =
   | { type: "HOMEPAGE" }
   | { type: "NONHOMEPAGE" }
   | { type: "PORTRAIT" }
   | { type: "LANDSCAPE" };
 
+/**
+ * Defines the menu state machine.
+ * @see https://xstate.js.org/viz/?gist=48b26a64f6ce9677bec1037cfec4b487
+ */
 const menuMachine = Machine<
   MenuStateContext,
-  MenuState,
+  MenuStateSchema,
   MenuStateChangingEvents
 >({
   key: "menu",
+  initial: "unknown",
   states: {
-    idle: {
-      on: { HOMEPAGE: "hidden", NONHOMEPAGE: "visible" },
+    unknown: {
+      on: { HOMEPAGE: "hidden", NONHOMEPAGE: "displayed" },
     },
     hidden: {
-      on: { NONHOMEPAGE: "visible" },
+      on: { NONHOMEPAGE: "displayed" },
     },
-    visible: {
+    displayed: {
       on: {
         HOMEPAGE: "hidden",
       },

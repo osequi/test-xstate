@@ -7,7 +7,7 @@ import { Machine } from "xstate";
 /**
  * Imports other types, components and hooks.
  */
-import { Menu } from "../Menu";
+import { Menu, menuMachine } from "../Menu";
 import { Content } from "../Content";
 
 /**
@@ -49,7 +49,7 @@ type MenuStateChangingEvents =
 
 interface MenuContext {}
 
-const menuMachine = Machine<
+const menuMachine2 = Machine<
   MenuContext,
   MenuStateSchema,
   MenuStateChangingEvents

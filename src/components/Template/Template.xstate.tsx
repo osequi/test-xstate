@@ -1,11 +1,13 @@
-import React, { ReactNode, useEffect, useState } from "react";
+import React, { ReactNode, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useMediaQuery } from "react-responsive";
+import { useMachine } from "@xstate/react";
+import { Machine } from "xstate";
 
 /**
  * Imports other types, components and hooks.
  */
-import { Menu } from "../Menu";
+import { Menu, menuMachine } from "../Menu";
 import { Content } from "../Content";
 
 /**
@@ -35,7 +37,7 @@ const TemplateDefaultProps = {};
  */
 const Template = (props: TTemplate) => {
   const { children } = props;
-  const [menuState, setMenuState] = useState("idle");
+  const [state, send] = useMachine(menuMachine);
 
   /**
    * Checks if homepage is the current route.
@@ -53,27 +55,19 @@ const Template = (props: TTemplate) => {
    * Updates the `page` typestate on route change.
    */
   useEffect(() => {
-    isHomePage
-      ? setMenuState("HOMEPAGE")
-      : isPortrait
-      ? setMenuState("PORTRAIT")
-      : setMenuState("LANDSCAPE");
+    isHomePage ? send("HOMEPAGE") : send("NONHOMEPAGE");
   }, [isHomePage]);
 
   /**
    * Updates the `deviceOrientation` typestate on device rotation.
    */
   useEffect(() => {
-    isHomePage
-      ? setMenuState("HOMEPAGE")
-      : isPortrait
-      ? setMenuState("PORTRAIT")
-      : setMenuState("LANDSCAPE");
+    isPortrait ? send("PORTRAIT") : send("LANDSCAPE");
   }, [isPortrait]);
 
   return (
     <>
-      <Menu state={menuState} />
+      <Menu state={state} />
       <Content>{children}</Content>
 
       <hr />

@@ -117,7 +117,7 @@ const menuMachine = Machine(menuStateTransitions);
  */
 const Menu = (props: TMenu) => {
   const { state } = props;
-  return <div>Menu: {JSON.stringify(state?.value)}</div>;
+  return <div>Menu: {JSON.stringify(state)}</div>;
 };
 
 Menu.defaultProps = MenuDefaultProps;

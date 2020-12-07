@@ -67,12 +67,26 @@ const Template = (props: TTemplate) => {
 
   return (
     <>
+      <Menu state={state} />
+      <Content>{children}</Content>
+
+      <hr />
+      <p>Logs:</p>
       <ul>
         <li>{`isHomePage: ${isHomePage}`}</li>
         <li>{`isPortrait: ${isPortrait}`}</li>
       </ul>
-      <Menu state={state} />
-      <Content>{children}</Content>
+
+      <hr />
+      <p>How it works:</p>
+      <ul>
+        <li>On the home page the menu is not displayed.</li>
+        <li>On the features page the menu is displayed:</li>
+        <ul>
+          <li>As `default` when the device is in landscape mode.</li>
+          <li>As `link with icon` when the device is in portrait mode.</li>
+        </ul>
+      </ul>
     </>
   );
 };

@@ -28,7 +28,7 @@ const FeaturesDefaultProps = {};
  * return <Features />
  */
 const Features = (props: TFeatures) => {
-  return <div>Features</div>;
+  return <h3>Features</h3>;
 };
 
 Features.defaultProps = FeaturesDefaultProps;
